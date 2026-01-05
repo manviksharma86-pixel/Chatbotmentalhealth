@@ -324,8 +324,112 @@ def analyze_image_emotions(image):
         return {}
 
 def analyze_text(text):
-    """Send text to backend for analysis"""
-    return send_to_backend('analyze-text', data={'text': text})
+    """Send text to backend for analysis, with local fallback"""
+    # Try backend first
+    result = send_to_backend('analyze-text', data={'text': text})
+    
+    # If backend is not available, use local processing
+    if result is None:
+        return analyze_text_local(text)
+    
+    return result
+
+def analyze_text_local(text):
+    """Local text analysis when backend is unavailable"""
+    # Use the local detection function
+    crisis_type, confidence = detect_speech_intent(text)
+    
+    # Determine urgency based on crisis type and confidence
+    urgency_map = {
+        'suicidal': 'critical',
+        'stressed': 'medium',
+        'insomnia': 'low',
+        'racism': 'high',
+        'out_of_topic': 'low'
+    }
+    urgency = urgency_map.get(crisis_type, 'low')
+    
+    # Generate response based on crisis type
+    responses = {
+        'stressed': {
+            'message': "I sense you're feeling stressed. That's something many people experience. Here are some immediate coping strategies:",
+            'guidance': [
+                "Take slow, deep breaths (4 count in, hold 4, out 4)",
+                "Practice progressive muscle relaxation",
+                "Take a short walk or do light exercise",
+                "Talk to someone you trust"
+            ],
+            'hotlines': {
+                'Suicide & Crisis Lifeline': '988',
+                'Crisis Text Line': 'Text HOME to 741741'
+            }
+        },
+        'insomnia': {
+            'message': "It sounds like you're struggling with sleep or rest. Let me help you:",
+            'guidance': [
+                "Establish a consistent sleep schedule",
+                "Avoid screens 30 minutes before bed",
+                "Try relaxation techniques like meditation",
+                "Consult a sleep specialist if it persists"
+            ],
+            'hotlines': {
+                'Healthcare Provider': 'Contact your local healthcare provider'
+            }
+        },
+        'suicidal': {
+            'message': "I'm very concerned about your safety. Please reach out immediately:",
+            'guidance': [
+                "Call 988 Suicide & Crisis Lifeline immediately",
+                "Text HOME to 741741 for Crisis Text Line",
+                "Go to nearest emergency room",
+                "Call 911 if you're in immediate danger"
+            ],
+            'hotlines': {
+                'Suicide & Crisis Lifeline': '988 - CALL NOW',
+                'Crisis Text Line': 'Text HOME to 741741',
+                'Emergency': '911'
+            },
+            'warning': 'If you are in immediate danger, please call 911 or go to your nearest emergency room.'
+        },
+        'racism': {
+            'message': "I'm sorry you're experiencing racism. You deserve support and respect:",
+            'guidance': [
+                "Document incidents for your safety",
+                "Connect with support communities",
+                "Contact civil rights organizations",
+                "Seek counseling from trauma-informed therapists"
+            ],
+            'hotlines': {
+                'National Race & Ethnicity Hotline': '1-844-856-4869'
+            }
+        },
+        'out_of_topic': {
+            'message': "I'm here to help with mental health concerns. How are you feeling emotionally?",
+            'guidance': [
+                "Describe what's bothering you",
+                "Share your feelings in detail",
+                "Tell me about recent stressful events",
+                "I'm here to listen and help"
+            ],
+            'hotlines': {
+                'Suicide & Crisis Lifeline': '988'
+            }
+        }
+    }
+    
+    response = responses.get(crisis_type, responses['out_of_topic'])
+    
+    return {
+        'success': True,
+        'crisis_type': crisis_type,
+        'urgency_level': urgency,
+        'confidence': confidence,
+        'message': response['message'],
+        'guidance': response['guidance'],
+        'hotlines': response['hotlines'],
+        'warning': response.get('warning', ''),
+        'timestamp': datetime.now().isoformat()
+    }
 
 def detect_speech_intent(text):
     """Detect crisis intent from text"""
@@ -369,6 +473,19 @@ st.markdown("""
 
 with st.sidebar:
     st.markdown("### ⚙️ Settings & Controls")
+    
+    # Check backend connection status
+    backend_url = os.getenv('FLASK_URL', 'http://localhost:5000')
+    try:
+        response = requests.get(f"{backend_url}/api/health", timeout=2)
+        backend_connected = response.status_code == 200
+    except:
+        backend_connected = False
+    
+    if backend_connected:
+        st.success("✅ Backend Connected")
+    else:
+        st.info("ℹ️ Using Local Mode (Backend unavailable)")
     
     enable_audio = st.checkbox("🎤 Enable Audio Input", value=True)
     enable_image = st.checkbox("🖼️ Enable Image Analysis", value=True)
@@ -471,9 +588,9 @@ with tab1:
             })
             save_history(st.session_state.conversation_history)
             
-            # Analyze text
+            # Analyze text (will use local fallback if backend unavailable)
             with st.spinner("🔍 Analyzing your message..."):
-                result = send_to_backend('analyze-text', data={'text': user_input})
+                result = analyze_text(user_input)
                 
                 if result and result.get('success'):
                     crisis_type = result.get('crisis_type', 'out_of_topic')
@@ -534,7 +651,8 @@ with tab1:
                     })
                     save_history(st.session_state.conversation_history)
                 else:
-                    st.error("❌ Failed to get response from backend. Please try again.")
+                    # This should rarely happen now since we have local fallback
+                    st.warning("⚠️ Unable to analyze message. Please try again.")
         
         st.rerun()
 
