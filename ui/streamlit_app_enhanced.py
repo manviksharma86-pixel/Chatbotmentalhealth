@@ -14,9 +14,25 @@ from dotenv import load_dotenv
 import requests
 import json
 from PIL import Image
-import cv2
-import librosa
-import speech_recognition as sr
+# Optional imports for features that may not be available on all platforms
+try:
+    import cv2
+    CV2_AVAILABLE = True
+except ImportError:
+    CV2_AVAILABLE = False
+
+try:
+    import librosa
+    LIBROSA_AVAILABLE = True
+except ImportError:
+    LIBROSA_AVAILABLE = False
+
+try:
+    import speech_recognition as sr
+    SPEECH_RECOGNITION_AVAILABLE = True
+except ImportError:
+    SPEECH_RECOGNITION_AVAILABLE = False
+
 import warnings
 import pickle
 from pathlib import Path
@@ -229,6 +245,17 @@ def format_crisis_display(result):
 
 def extract_audio_features(audio_file):
     """Extract features from audio using librosa"""
+    if not LIBROSA_AVAILABLE:
+        st.warning("⚠️ Librosa not available. Audio feature extraction disabled.")
+        return {
+            'mfcc_mean': 0.0,
+            'mfcc_std': 0.0,
+            'zcr_mean': 0.0,
+            'spectral_centroid_mean': 0.0,
+            'chroma_mean': 0.0,
+            'energy': 0.0
+        }
+    
     try:
         # Load audio
         y, sr_val = librosa.load(audio_file, sr=16000)
@@ -370,6 +397,16 @@ with st.sidebar:
             Path(RESULTS_FILE).unlink(missing_ok=True)
             st.success("✅ History cleared!")
             st.rerun()
+    
+    st.markdown("---")
+    
+    # Show dependency status
+    if not CV2_AVAILABLE or not LIBROSA_AVAILABLE:
+        st.markdown("### ⚠️ Feature Status")
+        if not CV2_AVAILABLE:
+            st.warning("OpenCV not available - Image processing limited")
+        if not LIBROSA_AVAILABLE:
+            st.warning("Librosa not available - Audio analysis limited")
     
     st.markdown("---")
     st.markdown("### 📱 About This App")
@@ -886,12 +923,20 @@ with tab4:
                                     st.write(f"• **{service}**: {number}")
                             
                             # Store result
+                            modalities_used = []
+                            if text_input_full:
+                                modalities_used.append('text')
+                            if uploaded_audio_full:
+                                modalities_used.append('audio')
+                            if uploaded_image_full:
+                                modalities_used.append('image')
+                            
                             st.session_state.detection_results.append({
                                 'type': 'multimodal_full',
                                 'crisis_type': result.get('crisis_type'),
                                 'confidence': result.get('confidence'),
                                 'urgency': result.get('urgency_level'),
-                                'modalities': mm_data['modalities'],
+                                'modalities': modalities_used,
                                 'timestamp': datetime.now().isoformat()
                             })
                             save_results(st.session_state.detection_results)
