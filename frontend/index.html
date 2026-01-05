@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Crisis Support Chatbot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-heart"></i>
+                <h1>MindCare</h1>
+            </div>
+            
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-tab="chat">
+                    <i class="fas fa-comments"></i> Chat
+                </button>
+                <button class="nav-btn" data-tab="audio">
+                    <i class="fas fa-microphone"></i> Voice
+                </button>
+                <button class="nav-btn" data-tab="image">
+                    <i class="fas fa-image"></i> Image
+                </button>
+                <button class="nav-btn" data-tab="dashboard">
+                    <i class="fas fa-chart-bar"></i> Dashboard
+                </button>
+                <button class="nav-btn" data-tab="resources">
+                    <i class="fas fa-book"></i> Resources
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="btn-secondary" id="clearHistoryBtn">
+                    <i class="fas fa-trash"></i> Clear History
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <!-- CHAT TAB -->
+            <section id="chat-tab" class="tab-content active">
+                <div class="chat-header">
+                    <h2>Chat Support</h2>
+                    <p>Talk to our AI assistant about what's on your mind</p>
+                </div>
+                
+                <div class="chat-container">
+                    <div id="chatMessages" class="chat-messages">
+                        <div class="message bot">
+                            <div class="message-content">
+                                <p>👋 Hello! I'm here to listen and support you. How are you feeling today?</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-area">
+                        <div class="input-group">
+                            <textarea id="userInput" placeholder="Type your feelings here..." rows="3"></textarea>
+                            <button id="sendBtn" class="btn-primary">
+                                <i class="fas fa-paper-plane"></i> Send
+                            </button>
+                        </div>
+                        <div class="typing-indicator" id="typingIndicator">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- AUDIO TAB -->
+            <section id="audio-tab" class="tab-content">
+                <div class="audio-header">
+                    <h2>Voice Input</h2>
+                    <p>Record your voice and let our AI understand your emotions</p>
+                </div>
+                
+                <div class="audio-container">
+                    <div class="recording-section">
+                        <div class="recording-controls">
+                            <button id="recordBtn" class="btn-primary record-btn">
+                                <i class="fas fa-microphone"></i> Start Recording
+                            </button>
+                            <button id="stopBtn" class="btn-secondary record-btn" disabled>
+                                <i class="fas fa-square"></i> Stop Recording
+                            </button>
+                        </div>
+                        
+                        <div id="recordingIndicator" class="recording-indicator hidden">
+                            <div class="recording-dot"></div>
+                            <span id="recordingTime">00:00</span>
+                        </div>
+                        
+                        <div id="audioPreview" class="audio-preview hidden">
+                            <audio id="audioPlayback" controls></audio>
+                            <button id="uploadAudioBtn" class="btn-primary">
+                                <i class="fas fa-upload"></i> Analyze Audio
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="audioResults" class="audio-results hidden">
+                        <h3>Analysis Results</h3>
+                        <div id="audioTranscription" class="result-item">
+                            <strong>Transcription:</strong>
+                            <p id="transcriptionText"></p>
+                        </div>
+                        <div id="audioAnalysis" class="result-item">
+                            <strong>Crisis Detection:</strong>
+                            <div id="crisisInfo"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- IMAGE TAB -->
+            <section id="image-tab" class="tab-content">
+                <div class="image-header">
+                    <h2>Image Analysis</h2>
+                    <p>Upload an image for emotion detection and analysis</p>
+                </div>
+                
+                <div class="image-container">
+                    <div class="upload-area">
+                        <input type="file" id="imageInput" accept="image/*" hidden>
+                        <div id="uploadBox" class="upload-box">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click or drag image here</p>
+                            <small>Supported: JPG, PNG, GIF (max 10MB)</small>
+                        </div>
+                    </div>
+                    
+                    <div id="imagePreview" class="image-preview hidden">
+                        <img id="previewImage" src="" alt="Preview">
+                        <button id="analyzeImageBtn" class="btn-primary">
+                            <i class="fas fa-search"></i> Analyze Image
+                        </button>
+                    </div>
+                    
+                    <div id="emotionResults" class="emotion-results hidden">
+                        <h3>Detected Emotions</h3>
+                        <div id="emotionBars"></div>
+                        <div id="emotionMessage" class="emotion-message"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- DASHBOARD TAB -->
+            <section id="dashboard-tab" class="tab-content">
+                <div class="dashboard-header">
+                    <h2>Your Dashboard</h2>
+                    <p>Track your emotional journey</p>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3>Total Messages</h3>
+                        <p id="totalMessages" class="stat-number">0</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Crisis Detections</h3>
+                        <p id="crisisCount" class="stat-number">0</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Session Duration</h3>
+                        <p id="sessionDuration" class="stat-number">0 min</p>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Avg. Confidence</h3>
+                        <p id="avgConfidence" class="stat-number">0%</p>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3>Crisis Type Distribution</h3>
+                    <canvas id="crisisChart"></canvas>
+                </div>
+                
+                <div class="emotion-timeline">
+                    <h3>Your Emotions Over Time</h3>
+                    <div id="timelineContainer"></div>
+                </div>
+            </section>
+            
+            <!-- RESOURCES TAB -->
+            <section id="resources-tab" class="tab-content">
+                <div class="resources-header">
+                    <h2>Crisis Resources</h2>
+                    <p>Help is available 24/7</p>
+                </div>
+                
+                <div class="resources-grid">
+                    <div class="resource-card emergency">
+                        <h3>🚨 Emergency Crisis</h3>
+                        <p><strong>988</strong> - Suicide & Crisis Lifeline</p>
+                        <p>Call or text 24/7 • Available in English & Spanish</p>
+                        <p><strong>Text:</strong> HOME to 741741</p>
+                        <button class="btn-primary">Call Now</button>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>🆘 Crisis Text Line</h3>
+                        <p>Free crisis counseling via text</p>
+                        <p><strong>Text:</strong> HOME to 741741</p>
+                        <p>Response in minutes 24/7</p>
+                        <button class="btn-secondary">Text Now</button>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>🌍 International Hotlines</h3>
+                        <ul>
+                            <li>🇬🇧 UK: 116 123</li>
+                            <li>🇨🇦 Canada: 1-833-456-4566</li>
+                            <li>🇦🇺 Australia: 1-300-224-636</li>
+                            <li>🇧🇷 Brazil: 188</li>
+                            <li>🇬🇪 Germany: 0800 111 0 111</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>💊 Mental Health Support</h3>
+                        <ul>
+                            <li><strong>NAMI:</strong> 1-800-950-NAMI</li>
+                            <li><strong>SAMHSA:</strong> 1-800-662-4357</li>
+                            <li><strong>AFSP:</strong> 1-888-333-2377</li>
+                        </ul>
+                        <button class="btn-secondary">Find Local Help</button>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>🎓 Coping Strategies</h3>
+                        <ul>
+                            <li>Breathing exercises</li>
+                            <li>Meditation & mindfulness</li>
+                            <li>Journaling techniques</li>
+                            <li>Physical activity tips</li>
+                        </ul>
+                        <button class="btn-secondary">Learn More</button>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <h3>📚 Educational Resources</h3>
+                        <ul>
+                            <li>Understanding mental health</li>
+                            <li>Signs of crisis</li>
+                            <li>How to help a friend</li>
+                            <li>Therapy options</li>
+                        </ul>
+                        <button class="btn-secondary">Read Articles</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Modal for alerts -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-btn">&times;</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
