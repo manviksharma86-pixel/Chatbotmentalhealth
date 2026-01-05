@@ -3,13 +3,22 @@ Enhanced Streamlit UI for Mental Health Crisis Support Chatbot
 Features: Text, Audio (Whisper), Image Analysis, Video, Dashboard
 """
 
+# Configure environment for headless server (Streamlit Cloud)
+import os
+# Disable GUI backends and system library dependencies
+os.environ['MPLBACKEND'] = 'Agg'  # Set matplotlib backend
+os.environ['DISPLAY'] = ''  # Disable X11 display
+
+# Set matplotlib to use non-GUI backend (required for headless servers like Streamlit Cloud)
+import matplotlib
+matplotlib.use('Agg')  # Use Anti-Grain Geometry backend (no GUI required)
+
 import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
-import os
 from dotenv import load_dotenv
 import requests
 import json
