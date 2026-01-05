@@ -15,11 +15,7 @@ import requests
 import json
 from PIL import Image
 # Optional imports for features that may not be available on all platforms
-try:
-    import cv2
-    CV2_AVAILABLE = True
-except ImportError:
-    CV2_AVAILABLE = False
+# Note: cv2 (OpenCV) removed - not used in this app and causes issues on Streamlit Cloud
 
 try:
     import librosa
@@ -401,10 +397,8 @@ with st.sidebar:
     st.markdown("---")
     
     # Show dependency status
-    if not CV2_AVAILABLE or not LIBROSA_AVAILABLE:
+    if not LIBROSA_AVAILABLE:
         st.markdown("### ⚠️ Feature Status")
-        if not CV2_AVAILABLE:
-            st.warning("OpenCV not available - Image processing limited")
         if not LIBROSA_AVAILABLE:
             st.warning("Librosa not available - Audio analysis limited")
     
