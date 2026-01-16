@@ -345,6 +345,7 @@ def analyze_text_local(text):
         'stressed': 'medium',
         'insomnia': 'low',
         'racism': 'high',
+        'help': 'medium',
         'out_of_topic': 'low'
     }
     urgency = urgency_map.get(crisis_type, 'low')
@@ -403,6 +404,34 @@ def analyze_text_local(text):
                 'National Race & Ethnicity Hotline': '1-844-856-4869'
             }
         },
+        'help': {
+            'message': "I'm here to support you. If you're unsure what to do, we can figure it out together.",
+            'guidance': [
+                "What's been bothering you?",
+                "Do you want advice, or do you just want to talk?",
+                "What's making this feel difficult right now?",
+                "Would you like some simple steps that might help?",
+                "You can share as much or as little as you want",
+                "This is a safe, judgment-free space",
+                "We can take things one step at a time"
+            ],
+            'hotlines': {
+                'Mental Health Helpline': '131165',
+                'Crisis Lifeline': '131114',
+                'Emergency Services': '000'
+            },
+            'prompts': [
+                "What's been bothering you?",
+                "Do you want advice, or do you just want to talk?",
+                "What's making this feel difficult right now?",
+                "Would you like some simple steps that might help?"
+            ],
+            'support': [
+                "You can share as much or as little as you want",
+                "This is a safe, judgment-free space",
+                "We can take things one step at a time"
+            ]
+        },
         'out_of_topic': {
             'message': "I'm here to help with mental health concerns. How are you feeling emotionally?",
             'guidance': [
@@ -438,6 +467,9 @@ def detect_speech_intent(text):
         'insomnia': ['can\'t sleep', 'insomnia', 'tired', 'sleepless', 'awake', 'rest'],
         'suicidal': ['suicide', 'kill myself', 'end it', 'harm', 'death', 'die'],
         'racism': ['racist', 'discrimination', 'prejudice', 'hate', 'racist'],
+        'help': ['help', 'help me', 'need help', 'i need help', 'i need guidance', 'what should i do', 
+                 'what can i do', 'i dont know what to do', 'i am confused', 'i feel lost', 
+                 'i am stuck', 'i need support', 'i need advice', 'guide me', 'please help'],
         'out_of_topic': []
     }
     

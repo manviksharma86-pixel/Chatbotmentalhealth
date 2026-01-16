@@ -258,6 +258,20 @@ class CrisisIntentAnalyzer:
         },
         'help': {
             'message': "I'm here to support you. If you're unsure what to do, we can figure it out together.",
+            'guidance': [
+                "What's been bothering you?",
+                "Do you want advice, or do you just want to talk?",
+                "What's making this feel difficult right now?",
+                "Would you like some simple steps that might help?",
+                "You can share as much or as little as you want",
+                "This is a safe, judgment-free space",
+                "We can take things one step at a time"
+            ],
+            'hotlines': {
+                'Mental Health Helpline': '131165',
+                'Crisis Lifeline': '131114',
+                'Emergency Services': '000'
+            },
             'prompts': [
                 "What's been bothering you?",
                 "Do you want advice, or do you just want to talk?",
@@ -351,10 +365,16 @@ class CrisisIntentAnalyzer:
             'crisis_type': intent,
             'urgency_level': urgency,
             'message': response_template['message'],
-            'guidance': response_template['guidance'],
-            'hotlines': response_template['hotlines'],
+            'guidance': response_template.get('guidance', []),
+            'hotlines': response_template.get('hotlines', {}),
             'confidence': 0.85 if intent != 'out_of_topic' else 0.5
         }
+        
+        # Add optional fields if they exist (for 'help' intent)
+        if 'prompts' in response_template:
+            response['prompts'] = response_template['prompts']
+        if 'support' in response_template:
+            response['support'] = response_template['support']
         
         # Add urgency-based warnings
         if urgency == 'critical' or intent == 'suicidal':

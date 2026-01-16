@@ -23,6 +23,7 @@ text_samples = {
     "racism_trauma": "I experienced racism today at work. They made hateful comments and excluded me from meetings. This has been ongoing and I feel isolated, angry, and hurt. I don't know how to cope with this anymore.",
     "grief_loss": "I lost my best friend last month and I can't stop crying. Everything reminds me of them. I feel lost without them and I don't know how to move forward.",
     "healthy_check_in": "I've been having a good week. My anxiety has been manageable and I've been able to enjoy time with my friends. I'm feeling hopeful about my future.",
+    "help_request": "I need help. I don't know what to do. I'm confused and feel stuck. Can someone help me?",
     "out_of_topic": "What's the capital of France? I need help with my homework."
 }
 

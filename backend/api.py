@@ -259,6 +259,19 @@ def generate_crisis_response(crisis_type, confidence, intensity):
             ],
             'hotline': "National Race & Ethnicity Hotline: 1-844-856-4869"
         },
+        'help': {
+            'message': "I'm here to support you. If you're unsure what to do, we can figure it out together.",
+            'suggestions': [
+                "What's been bothering you?",
+                "Do you want advice, or do you just want to talk?",
+                "What's making this feel difficult right now?",
+                "Would you like some simple steps that might help?",
+                "You can share as much or as little as you want",
+                "This is a safe, judgment-free space",
+                "We can take things one step at a time"
+            ],
+            'hotline': "Mental Health Helpline: 131165 | Crisis Lifeline: 131114 | Emergency: 000"
+        },
         'out_of_topic': {
             'message': "I'm here to help with mental health concerns. How are you feeling emotionally?",
             'suggestions': [
