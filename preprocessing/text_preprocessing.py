@@ -136,7 +136,30 @@ class CrisisIntentAnalyzer:
             'hit', 'beaten', 'hurt me', 'domestic violence', 'assault',
             'sexual assault', 'rape', 'harassed', 'bullied', 'bullying',
             'mistreated', 'abusive', 'toxic', 'manipulation', 'control'
+        ] ,
+        'help': [
+            'help', 'help me', 'need help', 'please help', 'can you help me',
+            'what should i do', 'what can i do', 'what do i do', 'what now',
+            'i need help', 'i need guidance', 'guide me', 'show me the way',
+            'i need advice', 'give me advice', 'i need direction',
+            'i don’t know what to do', 'i dont know what to do',
+            'i am confused', 'i feel lost', 'i am stuck', 'i feel stuck',
+            'i need support', 'support me', 'i need someone',
+            'i need to talk', 'i need to talk to someone',
+            'how can i fix this', 'how do i fix this',
+            'how do i handle this', 'how do i deal with this',
+            'how can i cope', 'how can i manage this',
+            'what are my options', 'what can help me',
+            'what is the solution', 'any solution',
+            'what is the next step', 'next steps',
+            'i need guidance now', 'i need immediate help',
+            'i am overwhelmed', 'i feel overwhelmed',
+            'i am struggling', 'i am not okay',
+            'can someone help me', 'is anyone there',
+            'i need reassurance', 'i need clarity',
+            'please guide me', 'please advise'
         ]
+
     }
     
     # Crisis responses with hotline numbers and guidance
@@ -232,7 +255,22 @@ class CrisisIntentAnalyzer:
                 'Crisis Lifeline': '131114',
                 'Emergency Services': '000'
             }
+        },
+        'help': {
+            'message': "I'm here to support you. If you're unsure what to do, we can figure it out together.",
+            'prompts': [
+                "What's been bothering you?",
+                "Do you want advice, or do you just want to talk?",
+                "What's making this feel difficult right now?",
+                "Would you like some simple steps that might help?"
+            ],
+            'support': [
+                "You can share as much or as little as you want",
+                "This is a safe, judgment-free space",
+                "We can take things one step at a time"
+            ]
         }
+
     }
     
     URGENCY_INDICATORS = {
